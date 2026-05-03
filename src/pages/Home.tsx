@@ -2,11 +2,11 @@ import { Asset, Text, FixedBottomCTA, Spacing } from '@toss/tds-mobile';
 import { adaptive } from '@toss/tds-colors';
 
 interface Props {
-  onBack: () => void;
+  //onBack: () => void;
   onNext: () => void;
 }
 
-export default function Home({ onBack, onNext }: Props) {
+export default function Home({ onNext }: Props) {
   return (
     <>
       {/* 상단 네비게이션 헤더 */}
@@ -15,12 +15,7 @@ export default function Home({ onBack, onNext }: Props) {
 
       {/* 메인 카피 영역 */}
       <div style={{ padding: '0 24px' }}>
-        <Text
-          typography="t3"
-          fontWeight="bold"
-          color={adaptive.grey900}
-          display="block"
-        >
+        <Text typography="t3" fontWeight="bold" color={adaptive.grey900}>
           내게 딱 맞는 AI 직무 수시채용,
         </Text>
         <Text

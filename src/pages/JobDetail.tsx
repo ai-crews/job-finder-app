@@ -1,35 +1,34 @@
-import { useState } from 'react';
-import { Asset, Text, FixedBottomCTA, Spacing } from '@toss/tds-mobile';
+import { useState, useEffect } from 'react';
+import { Asset, Text, Spacing } from '@toss/tds-mobile';
 import { adaptive } from '@toss/tds-colors';
 
 interface Props {
   jobData: any;
-  onBack: () => void;
+  onBack: () => void; // 이제 이 함수는 '물리 버튼' 대응용으로만 쓰입니다.
 }
 
 export default function JobDetail({ jobData, onBack }: Props) {
-  // 💡 로고 이미지가 깨질 경우를 대비한 상태 추가
   const [imgError, setImgError] = useState(false);
 
-  if (!jobData) {
-    return (
-      <div style={{ padding: '40px', textAlign: 'center' }}>
-        <Text typography="t5">데이터를 불러올 수 없습니다.</Text>
-        <div
-          onClick={onBack}
-          style={{
-            marginTop: '16px',
-            color: adaptive.blue500,
-            cursor: 'pointer',
-          }}
-        >
-          목록으로 돌아가기
-        </div>
-      </div>
-    );
-  }
+  // 💡 [핵심] 사용자가 폰의 뒤로가기나 토스 상단바의 백버튼을 눌렀을 때를 감지합니다.
+  useEffect(() => {
+    // 1. 상세 페이지에 들어오자마자 히스토리에 기록을 하나 추가합니다.
+    window.history.pushState(null, '', window.location.href);
 
-  // 💡 1. 마감일 예외 처리 ('9999-12-31' 이거나 값이 아예 없을 때)
+    // 2. 뒤로가기 이벤트가 발생하면 부모의 onBack(상태 변경 로직)을 실행합니다.
+    const handlePopState = () => {
+      onBack();
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [onBack]);
+
+  if (!jobData) return null;
+
   const displayDeadline =
     !jobData.deadline || jobData.deadline === '9999-12-31'
       ? '마감일 없음'
@@ -37,11 +36,11 @@ export default function JobDetail({ jobData, onBack }: Props) {
 
   return (
     <>
-      {/* 상단 네비게이션 헤더 */}
+      {/* 💡 상단 헤더 공간 확보를 위해 Spacing만 유지합니다. */}
       <Spacing size={24} />
-      {/* 💡 2 & 3. 로고, 기업명, 공고명, 상세내용을 모두 같은 div(padding: 0 24px) 안에 넣어 줄맞춤을 완벽하게 통일했습니다. */}
+
       <div style={{ padding: '0 24px' }}>
-        {/* 최상단 회사 로고 */}
+        {/* 회사 로고 */}
         {!jobData.logo || imgError ? (
           <div
             style={{
@@ -53,7 +52,7 @@ export default function JobDetail({ jobData, onBack }: Props) {
               alignItems: 'center',
               justifyContent: 'center',
               border: '1px solid rgba(0,0,0,0.05)',
-              marginBottom: '16px', // 로고와 기업명 사이 간격
+              marginBottom: '16px',
             }}
           >
             <Asset.Icon
@@ -74,12 +73,11 @@ export default function JobDetail({ jobData, onBack }: Props) {
               objectFit: 'contain',
               backgroundColor: '#ffffff',
               border: '1px solid rgba(0,0,0,0.05)',
-              marginBottom: '16px', // 로고와 기업명 사이 간격
+              marginBottom: '16px',
             }}
           />
         )}
 
-        {/* 기업명 */}
         <Text
           display="block"
           color={adaptive.grey700}
@@ -91,7 +89,6 @@ export default function JobDetail({ jobData, onBack }: Props) {
 
         <Spacing size={4} />
 
-        {/* 공고명 */}
         <Text
           display="block"
           color={adaptive.grey900}
@@ -103,14 +100,11 @@ export default function JobDetail({ jobData, onBack }: Props) {
 
         <Spacing size={32} />
 
-        {/* 상세 내용 안내 문구 */}
         <Text display="block" typography="t6" color={adaptive.grey700}>
           해당 채용공고의 요약 정보입니다.
         </Text>
 
         <Spacing size={16} />
-
-        {/* 가로 구분선 */}
         <div
           style={{
             height: '1px',
@@ -118,10 +112,9 @@ export default function JobDetail({ jobData, onBack }: Props) {
             width: '100%',
           }}
         />
-
         <Spacing size={16} />
 
-        {/* 토스 스타일의 깔끔한 정보 표 레이아웃 */}
+        {/* 상세 정보 리스트 */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div style={{ display: 'flex' }}>
             <div style={{ width: '80px' }}>
@@ -163,15 +156,9 @@ export default function JobDetail({ jobData, onBack }: Props) {
           )}
         </div>
       </div>
-      <Spacing size={100} /> {/* 버튼에 내용이 가려지지 않도록 여백 추가 */}
-      <FixedBottomCTA
-        color="dark"
-        variant="weak"
-        loading={false}
-        onClick={onBack}
-      >
-        목록으로 돌아가기
-      </FixedBottomCTA>
+
+      {/* 💡 FixedBottomCTA(목록으로 돌아가기 버튼)를 삭제했습니다. */}
+      <Spacing size={40} />
     </>
   );
 }
