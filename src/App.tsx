@@ -1,36 +1,51 @@
 import { useState, useEffect } from 'react';
+import { graniteEvent } from '@apps-in-toss/web-framework'; // 💡 SDK 임포트
 import Home from './pages/Home';
-import JobList from './pages/JobList';
+import JobList, { Job } from './pages/JobList'; // 💡 Job 타입 가져오기
 import JobDetail from './pages/JobDetail';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<'home' | 'list' | 'detail'>(
     'home',
   );
-  const [selectedJob, setSelectedJob] = useState<any>(null);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
-  // 💡 [핵심] 모달 없이 깔끔하게 페이지 이동만 통제하는 라우터
+  // 💡 [핵심] 토스 전용 뒤로가기 이벤트 감지
   useEffect(() => {
-    // 1. 앱 초기 진입 시 히스토리에 'home' 상태를 기록합니다.
-    window.history.replaceState({ page: 'home' }, '', '');
+    let unsubscription: (() => void) | undefined;
 
-    const handlePopState = (e: PopStateEvent) => {
-      const state = e.state;
+    try {
+      // 💡 브라우저 환경에서는 에러가 날 수 있으므로 try-catch로 감싸줍니다.
+      unsubscription = graniteEvent.addEventListener('backEvent', {
+        onEvent: () => {
+          if (currentPage === 'detail') {
+            setCurrentPage('list');
+          } else if (currentPage === 'list') {
+            setCurrentPage('home');
+          } else {
+            window.close();
+          }
+        },
+        onError: (error) => {
+          console.error('뒤로가기 처리 중 에러가 발생했습니다:', error);
+        },
+      });
+    } catch (error) {
+      // 일반 크롬 브라우저 등에서 접속했을 때 앱이 죽지 않도록 방어합니다.
+      console.warn(
+        '토스 앱 환경이 아니므로 네이티브 뒤로가기 설정을 건너뜁니다.',
+      );
+    }
 
-      // 2. 히스토리 상태가 있으면 해당 페이지로 이동하고,
-      // 상태가 없으면(홈에서 뒤로가기) 브라우저 기본 동작에 따라 웹뷰가 종료됩니다.
-      if (state && state.page) {
-        setCurrentPage(state.page);
+    return () => {
+      if (unsubscription) {
+        unsubscription();
       }
     };
+  }, [currentPage]); // 💡 currentPage가 바뀔 때마다 최신 상태를 참조하도록 합니다.
 
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
-  // 💡 페이지 앞으로 가기 함수
-  const goToPage = (page: 'home' | 'list' | 'detail', jobData?: any) => {
-    window.history.pushState({ page }, '', '');
+  // 💡 페이지 이동 함수 (단순히 상태만 변경합니다)
+  const goToPage = (page: 'home' | 'list' | 'detail', jobData?: Job) => {
     setCurrentPage(page);
     if (jobData) setSelectedJob(jobData);
   };
@@ -48,7 +63,9 @@ function App() {
       {currentPage === 'list' && (
         <JobList onDetail={(job) => goToPage('detail', job)} />
       )}
-      {currentPage === 'detail' && <JobDetail jobData={selectedJob} />}
+      {currentPage === 'detail' && selectedJob && (
+        <JobDetail jobData={selectedJob} />
+      )}
     </div>
   );
 }
