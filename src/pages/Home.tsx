@@ -1,5 +1,6 @@
 import { Asset, Text, FixedBottomCTA, Spacing } from '@toss/tds-mobile';
 import { adaptive } from '@toss/tds-colors';
+import Header from '../components/Header';
 
 interface Props {
   onBack: () => void;
@@ -10,30 +11,7 @@ export default function Home({ onBack, onNext }: Props) {
   return (
     <>
       {/* 상단 네비게이션 헤더 */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          padding: '12px 16px',
-          gap: '8px',
-        }}
-      >
-        <div onClick={onBack} style={{ display: 'flex', cursor: 'pointer' }}>
-          <Asset.Icon
-            frameShape={Asset.frameShape.CleanW24}
-            name="icon-arrow-back-ios-mono"
-            color={adaptive.grey900}
-          />
-        </div>
-        <Asset.Image
-          frameShape={Asset.frameShape.CleanW16}
-          src="https://static.toss.im/appsintoss/23025/e321c37d-c193-41b5-9a0f-7abef45b0b52.png"
-          style={{ aspectRatio: '1/1' }}
-        />
-        <Text color={adaptive.grey900} typography="t6" fontWeight="semibold">
-          잡파인더
-        </Text>
-      </div>
+      <Header onBack={onBack} />
 
       <Spacing size={40} />
 
