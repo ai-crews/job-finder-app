@@ -72,22 +72,8 @@ export default function JobList({ onBack, onDetail }: Props) {
   const [isLoading, setIsLoading] = useState(true);
 
   // 💡 컴포넌트 마운트 시 Railway 서버에서 구글 시트 데이터를 가져옵니다.
-  //   useEffect(() => {
-  //     fetch('https://job-finder-web-production.up.railway.app/api/sheet-jobs')
-  //       .then((res) => res.json())
-  //       .then((data) => {
-  //         setJobs(data);
-  //         setIsLoading(false);
-  //       })
-  //       .catch((err) => {
-  //         console.error('데이터를 불러오는데 실패했습니다.', err);
-  //         setIsLoading(false);
-  //       });
-  //   }, []);
-
   useEffect(() => {
-    // 💡 테스트를 위해 Railway 주소 대신 로컬 주소(localhost:3000)로 변경합니다.
-    fetch('http://localhost:3000/api/sheet-jobs')
+    fetch('https://job-finder-web-production.up.railway.app/api/sheet-jobs')
       .then((res) => res.json())
       .then((data) => {
         setJobs(data);
@@ -98,6 +84,21 @@ export default function JobList({ onBack, onDetail }: Props) {
         setIsLoading(false);
       });
   }, []);
+
+  //로컬 테스트용
+  //   useEffect(() => {
+  //     // 💡 테스트를 위해 Railway 주소 대신 로컬 주소(localhost:3000)로 변경합니다.
+  //     fetch('http://localhost:3000/api/sheet-jobs')
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         setJobs(data);
+  //         setIsLoading(false);
+  //       })
+  //       .catch((err) => {
+  //         console.error('데이터를 불러오는데 실패했습니다.', err);
+  //         setIsLoading(false);
+  //       });
+  //   }, []);
 
   const filteredJobs = jobs.filter((job) => {
     // 💡 더미 데이터 대신 서버에서 받아온 jobs를 기준으로 필터링합니다. (null 방어 코드 추가)

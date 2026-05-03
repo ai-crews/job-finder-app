@@ -1,21 +1,16 @@
-import {
-  Asset,
-  Text,
-  Post,
-  FixedBottomCTA,
-  Spacing,
-  ListHeader,
-} from '@toss/tds-mobile';
+import { useState } from 'react';
+import { Asset, Text, FixedBottomCTA, Spacing } from '@toss/tds-mobile';
 import { adaptive } from '@toss/tds-colors';
 
-// 💡 1. JobList에서 넘겨줄 jobData를 받을 수 있도록 추가했습니다.
 interface Props {
   jobData: any;
   onBack: () => void;
 }
 
 export default function JobDetail({ jobData, onBack }: Props) {
-  // 💡 2. 만약 데이터가 전달되지 않았을 경우를 대비한 방어 코드
+  // 💡 로고 이미지가 깨질 경우를 대비한 상태 추가
+  const [imgError, setImgError] = useState(false);
+
   if (!jobData) {
     return (
       <div style={{ padding: '40px', textAlign: 'center' }}>
@@ -34,8 +29,15 @@ export default function JobDetail({ jobData, onBack }: Props) {
     );
   }
 
+  // 💡 1. 마감일 예외 처리 ('9999-12-31' 이거나 값이 아예 없을 때)
+  const displayDeadline =
+    !jobData.deadline || jobData.deadline === '9999-12-31'
+      ? '마감일 없음'
+      : jobData.deadline;
+
   return (
     <>
+      {/* 상단 네비게이션 헤더 */}
       <div
         style={{
           display: 'flex',
@@ -57,64 +59,140 @@ export default function JobDetail({ jobData, onBack }: Props) {
           style={{ aspectRatio: '1/1' }}
         />
         <Text color={adaptive.grey900} typography="t6" fontWeight="semibold">
-          잡파인더{' '}
+          잡파인더
         </Text>
       </div>
-
       <Spacing size={24} />
-
-      <ListHeader
-        title={
-          <ListHeader.TitleParagraph
-            color={adaptive.grey800}
-            fontWeight="bold"
-            typography="t4"
-          >
-            {/* 💡 3. 하드코딩된 '기업명' 대신 실제 데이터를 넣습니다. */}
-            {jobData.company}{' '}
-          </ListHeader.TitleParagraph>
-        }
-      />
-
-      <Spacing size={32} />
-
+      {/* 💡 2 & 3. 로고, 기업명, 공고명, 상세내용을 모두 같은 div(padding: 0 24px) 안에 넣어 줄맞춤을 완벽하게 통일했습니다. */}
       <div style={{ padding: '0 24px' }}>
+        {/* 최상단 회사 로고 */}
+        {!jobData.logo || imgError ? (
+          <div
+            style={{
+              width: '56px',
+              height: '56px',
+              borderRadius: '16px',
+              backgroundColor: adaptive.grey100,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: '1px solid rgba(0,0,0,0.05)',
+              marginBottom: '16px', // 로고와 기업명 사이 간격
+            }}
+          >
+            <Asset.Icon
+              frameShape={Asset.frameShape.CleanW24}
+              name="icon-picture-mono"
+              color={adaptive.grey400}
+            />
+          </div>
+        ) : (
+          <img
+            src={jobData.logo}
+            onError={() => setImgError(true)}
+            alt={`${jobData.company} 로고`}
+            style={{
+              width: '56px',
+              height: '56px',
+              borderRadius: '16px',
+              objectFit: 'contain',
+              backgroundColor: '#ffffff',
+              border: '1px solid rgba(0,0,0,0.05)',
+              marginBottom: '16px', // 로고와 기업명 사이 간격
+            }}
+          />
+        )}
+
+        {/* 기업명 */}
         <Text
           display="block"
-          color={adaptive.grey800}
+          color={adaptive.grey700}
           typography="t5"
-          fontWeight="semibold"
+          fontWeight="medium"
         >
-          {/* 💡 4. 하드코딩된 '공고명' 대신 실제 데이터를 넣습니다. */}
-          {jobData.title}{' '}
+          {jobData.company}
         </Text>
-        <Spacing size={12} />
 
-        <Post.Paragraph paddingBottom={8} typography="t6">
-          해당 채용공고의 상세 요약 정보입니다.
-        </Post.Paragraph>
+        <Spacing size={4} />
 
-        <Post.Hr paddingBottom={8} />
+        {/* 공고명 */}
+        <Text
+          display="block"
+          color={adaptive.grey900}
+          typography="t3"
+          fontWeight="bold"
+        >
+          {jobData.title}
+        </Text>
 
-        <Post.Ul paddingBottom={24} typography="t6">
-          {/* 💡 5. Post.Ul 틀을 유지하면서 실제 직무와 마감일 데이터를 넣습니다. */}
-          <Post.Li>
-            모집 직무: {jobData.job ? jobData.job.join(', ') : '무관'}
-          </Post.Li>
+        <Spacing size={32} />
 
-          <Post.Ul paddingBottom={8} typography="t6">
-            <Post.Li>마감일: {jobData.deadline || '상시채용'}</Post.Li>
-            {jobData.tag && <Post.Li>채용형태: {jobData.tag}</Post.Li>}
-          </Post.Ul>
-        </Post.Ul>
+        {/* 상세 내용 안내 문구 */}
+        <Text display="block" typography="t6" color={adaptive.grey700}>
+          해당 채용공고의 요약 정보입니다.
+        </Text>
+
+        <Spacing size={16} />
+
+        {/* 가로 구분선 */}
+        <div
+          style={{
+            height: '1px',
+            backgroundColor: 'rgba(0,0,0,0.05)',
+            width: '100%',
+          }}
+        />
+
+        <Spacing size={16} />
+
+        {/* 토스 스타일의 깔끔한 정보 표 레이아웃 */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div style={{ display: 'flex' }}>
+            <div style={{ width: '80px' }}>
+              <Text typography="t6" color={adaptive.grey500}>
+                모집 직무
+              </Text>
+            </div>
+            <Text typography="t6" color={adaptive.grey800} fontWeight="medium">
+              {jobData.job ? jobData.job.join(', ') : '무관'}
+            </Text>
+          </div>
+
+          <div style={{ display: 'flex' }}>
+            <div style={{ width: '80px' }}>
+              <Text typography="t6" color={adaptive.grey500}>
+                마감일
+              </Text>
+            </div>
+            <Text typography="t6" color={adaptive.grey800} fontWeight="medium">
+              {displayDeadline}
+            </Text>
+          </div>
+
+          {jobData.tag && (
+            <div style={{ display: 'flex' }}>
+              <div style={{ width: '80px' }}>
+                <Text typography="t6" color={adaptive.grey500}>
+                  채용형태
+                </Text>
+              </div>
+              <Text
+                typography="t6"
+                color={adaptive.grey800}
+                fontWeight="medium"
+              >
+                {jobData.tag}
+              </Text>
+            </div>
+          )}
+        </div>
       </div>
-
-      {/* 💡 앱인토스 정책에 맞게 외부 링크 이동을 제거하고 목록으로 돌아가기 기능으로 수정했습니다. */}
+      <Spacing size={100} /> {/* 버튼에 내용이 가려지지 않도록 여백 추가 */}
       <FixedBottomCTA
         color="dark"
-        variant="weak" // 너무 강한 강조보다는 자연스럽게 돌아가기를 유도하는 weak 스타일
+        variant="weak"
         loading={false}
-        onClick={onBack} // 새 창을 띄우는 대신 상단 뒤로가기 화살표와 똑같은 함수를 연결
+        onClick={onBack}
       >
         목록으로 돌아가기
       </FixedBottomCTA>
