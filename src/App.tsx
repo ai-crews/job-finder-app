@@ -25,7 +25,7 @@ function App() {
         },
       );
 
-      // 💡 [수정된 핵심] 홈 화면이 '아닐 때만' 뒤로가기를 가로챕니다.
+      // 💡 홈 화면이 '아닐 때만' 뒤로가기를 가로챕니다.
       // 홈 화면일 때는 아무것도 가로채지 않으므로, 토스 앱이 알아서 '네이티브 종료 모달'을 띄워줍니다!
       if (currentPage !== 'home') {
         backUnsubscription = graniteEvent.addEventListener('backEvent', {
