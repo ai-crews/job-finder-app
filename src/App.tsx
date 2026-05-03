@@ -23,7 +23,16 @@ function App() {
         boxShadow: '0 0 20px rgba(0,0,0,0.05)',
       }}
     >
-      {currentPage === 'home' && <Home onNext={() => setCurrentPage('list')} />}
+      {currentPage === 'home' && (
+        <Home
+          onBack={() => {
+            // 💡 앱인토스(웹뷰) 환경의 첫 화면에서 뒤로가기를 호출하면
+            // 미니앱이 자연스럽게 종료되고 토스 앱으로 돌아갑니다.
+            window.history.back();
+          }}
+          onNext={() => setCurrentPage('list')}
+        />
+      )}
 
       {currentPage === 'list' && (
         <JobList
