@@ -132,7 +132,7 @@ export default function Home({ onBack, onNext }: Props) {
         {/* 기능 3 */}
         <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
           <img
-            src="https://static.toss.im/2d-emojis/png/4x/u1F4C4.png"
+            src="https://static.toss.im/2d-emojis/png/4x/u1F5C2.png"
             alt="문서"
             style={{ width: '28px', height: '28px', flexShrink: 0 }}
           />
