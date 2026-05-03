@@ -13,8 +13,6 @@ export interface Job {
 }
 
 interface Props {
-  // 💡 부모에게 홈으로 가라고 신호를 보낼 통로를 다시 열어줍니다.
-  onBack: () => void;
   onDetail: (job: Job) => void;
 }
 
@@ -69,28 +67,11 @@ const JOB_TAGS = [
   'AI기획자',
 ];
 
-export default function JobList({ onBack, onDetail }: Props) {
+export default function JobList({ onDetail }: Props) {
   const [selectedJob, setSelectedJob] = useState('전체');
   const [keyword, setKeyword] = useState('');
   const [jobs, setJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  // 💡 [핵심] 리스트 화면에서도 물리 뒤로가기를 감지합니다.
-  useEffect(() => {
-    // 1. 리스트에 진입하면 히스토리 스택 추가
-    window.history.pushState(null, '', window.location.href);
-
-    // 2. 뒤로가기 발생 시 실행할 로직
-    const handlePopState = () => {
-      onBack(); // App.tsx의 setCurrentPage('home') 실행
-    };
-
-    window.addEventListener('popstate', handlePopState);
-
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-    };
-  }, [onBack]);
 
   useEffect(() => {
     fetch('https://job-finder-web-production.up.railway.app/api/sheet-jobs')

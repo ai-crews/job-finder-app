@@ -1,31 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Asset, Text, Spacing } from '@toss/tds-mobile';
 import { adaptive } from '@toss/tds-colors';
 
 interface Props {
   jobData: any;
-  onBack: () => void; // 이제 이 함수는 '물리 버튼' 대응용으로만 쓰입니다.
 }
 
-export default function JobDetail({ jobData, onBack }: Props) {
+export default function JobDetail({ jobData }: Props) {
   const [imgError, setImgError] = useState(false);
-
-  // 💡 [핵심] 사용자가 폰의 뒤로가기나 토스 상단바의 백버튼을 눌렀을 때를 감지합니다.
-  useEffect(() => {
-    // 1. 상세 페이지에 들어오자마자 히스토리에 기록을 하나 추가합니다.
-    window.history.pushState(null, '', window.location.href);
-
-    // 2. 뒤로가기 이벤트가 발생하면 부모의 onBack(상태 변경 로직)을 실행합니다.
-    const handlePopState = () => {
-      onBack();
-    };
-
-    window.addEventListener('popstate', handlePopState);
-
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-    };
-  }, [onBack]);
 
   if (!jobData) return null;
 
@@ -36,7 +18,6 @@ export default function JobDetail({ jobData, onBack }: Props) {
 
   return (
     <>
-      {/* 💡 상단 헤더 공간 확보를 위해 Spacing만 유지합니다. */}
       <Spacing size={24} />
 
       <div style={{ padding: '0 24px' }}>
@@ -157,7 +138,6 @@ export default function JobDetail({ jobData, onBack }: Props) {
         </div>
       </div>
 
-      {/* 💡 FixedBottomCTA(목록으로 돌아가기 버튼)를 삭제했습니다. */}
       <Spacing size={40} />
     </>
   );

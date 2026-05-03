@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Home from './pages/Home';
 import JobList from './pages/JobList';
 import JobDetail from './pages/JobDetail';
@@ -7,9 +7,33 @@ function App() {
   const [currentPage, setCurrentPage] = useState<'home' | 'list' | 'detail'>(
     'home',
   );
-
-  // 💡 선택한 공고의 데이터를 저장할 상태를 추가합니다.
   const [selectedJob, setSelectedJob] = useState<any>(null);
+
+  // 💡 [핵심] 모달 없이 깔끔하게 페이지 이동만 통제하는 라우터
+  useEffect(() => {
+    // 1. 앱 초기 진입 시 히스토리에 'home' 상태를 기록합니다.
+    window.history.replaceState({ page: 'home' }, '', '');
+
+    const handlePopState = (e: PopStateEvent) => {
+      const state = e.state;
+
+      // 2. 히스토리 상태가 있으면 해당 페이지로 이동하고,
+      // 상태가 없으면(홈에서 뒤로가기) 브라우저 기본 동작에 따라 웹뷰가 종료됩니다.
+      if (state && state.page) {
+        setCurrentPage(state.page);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // 💡 페이지 앞으로 가기 함수
+  const goToPage = (page: 'home' | 'list' | 'detail', jobData?: any) => {
+    window.history.pushState({ page }, '', '');
+    setCurrentPage(page);
+    if (jobData) setSelectedJob(jobData);
+  };
 
   return (
     <div
@@ -20,36 +44,11 @@ function App() {
         position: 'relative',
       }}
     >
-      {currentPage === 'home' && (
-        <Home
-          // onBack={() => {
-          //   // 💡 앱인토스(웹뷰) 환경의 첫 화면에서 뒤로가기를 호출하면
-          //   // 미니앱이 자연스럽게 종료되고 토스 앱으로 돌아갑니다.
-          //   window.history.back();
-          // }}
-          onNext={() => setCurrentPage('list')}
-        />
-      )}
-
+      {currentPage === 'home' && <Home onNext={() => goToPage('list')} />}
       {currentPage === 'list' && (
-        <JobList
-          onBack={() => setCurrentPage('home')}
-          onDetail={(job) => {
-            // 💡 1. 리스트에서 클릭한 공고 데이터를 저장하고
-            setSelectedJob(job);
-            // 💡 2. 상세 페이지로 이동합니다.
-            setCurrentPage('detail');
-          }}
-        />
+        <JobList onDetail={(job) => goToPage('detail', job)} />
       )}
-
-      {currentPage === 'detail' && (
-        <JobDetail
-          // 💡 3. 저장해둔 데이터를 JobDetail로 쏙 넘겨줍니다.
-          jobData={selectedJob}
-          onBack={() => setCurrentPage('list')}
-        />
-      )}
+      {currentPage === 'detail' && <JobDetail jobData={selectedJob} />}
     </div>
   );
 }
