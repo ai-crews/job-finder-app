@@ -24,3 +24,12 @@ npm run deploy
 - [앱인토스 개발자 커뮤니티](https://techchat-apps-in-toss.toss.im/)
 
 AI를 사용하시는 경우 [여기](https://developers-apps-in-toss.toss.im/development/llms.html)를 확인해보세요.
+
+---
+
+## 테스트 하기
+
+- [앱인토스 개발 서버 연결하기](https://developers-apps-in-toss.toss.im/development/local-server.html)
+- [안드로이드 환경설정](https://developers-apps-in-toss.toss.im/development/client/android.html)
+- [IOS 환경설정](https://developers-apps-in-toss.toss.im/development/client/ios.html)
+- [테스트 앱 샌드박스 설치](https://developers-apps-in-toss.toss.im/development/test/sandbox.html)
