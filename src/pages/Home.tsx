@@ -45,7 +45,7 @@ export default function Home({ onBack, onNext }: Props) {
           color={adaptive.grey900}
           display="block"
         >
-          내게 딱 맞는 수시채용 공고,
+          내게 딱 맞는 AI 직무 수시채용,
         </Text>
         <Text
           typography="t3"

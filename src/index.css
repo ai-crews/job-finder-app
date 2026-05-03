@@ -4,19 +4,22 @@
 
 * {
   -webkit-tap-highlight-color: transparent;
+  /* 💡 추가: 테두리나 패딩 때문에 화면 너비가 삐져나가는 것을 막아줍니다 */
+  box-sizing: border-box;
 }
 
+html,
 body {
   margin: 0;
+  padding: 0;
+  width: 100%; /* 💡 가로 화면을 100% 꽉 채웁니다 */
   min-width: 320px;
   min-height: 100vh;
+  background-color: #ffffff; /* 배경을 항상 하얀색으로 고정 */
 }
 
-@media (min-width: 481px) {
-  body {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    background-color: #f5f5f5 !important;
-  }
+/* 💡 리액트 앱이 그려지는 가장 바깥 도화지도 100%로 맞춰줍니다 */
+#root {
+  width: 100%;
+  min-height: 100vh;
 }

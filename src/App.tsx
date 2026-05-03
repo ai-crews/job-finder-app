@@ -14,13 +14,10 @@ function App() {
   return (
     <div
       style={{
-        maxWidth: '400px',
-        margin: '0 auto',
+        width: '100%',
         minHeight: '100vh',
         backgroundColor: '#ffffff',
         position: 'relative',
-        transform: 'translateZ(0)',
-        boxShadow: '0 0 20px rgba(0,0,0,0.05)',
       }}
     >
       {currentPage === 'home' && (
