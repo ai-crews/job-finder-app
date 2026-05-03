@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Asset, Text, FixedBottomCTA, Spacing } from '@toss/tds-mobile';
 import { adaptive } from '@toss/tds-colors';
-import Header from '../components/Header';
 
 interface Props {
   jobData: any;
@@ -39,7 +38,6 @@ export default function JobDetail({ jobData, onBack }: Props) {
   return (
     <>
       {/* 상단 네비게이션 헤더 */}
-      <Header onBack={onBack} />
       <Spacing size={24} />
       {/* 💡 2 & 3. 로고, 기업명, 공고명, 상세내용을 모두 같은 div(padding: 0 24px) 안에 넣어 줄맞춤을 완벽하게 통일했습니다. */}
       <div style={{ padding: '0 24px' }}>

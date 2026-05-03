@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Asset, Text, SearchField, ListRow, Spacing } from '@toss/tds-mobile';
 import { adaptive } from '@toss/tds-colors';
-import Header from '../components/Header';
 
 interface Props {
   onBack: () => void;
@@ -117,8 +116,6 @@ export default function JobList({ onBack, onDetail }: Props) {
   // 🚨 아래 return문 내의 UI 디자인과 스타일링 코드는 요청하신 대로 100% 동일하게 유지했습니다.
   return (
     <>
-      <Header onBack={onBack} />
-
       <Spacing size={12} />
 
       <SearchField

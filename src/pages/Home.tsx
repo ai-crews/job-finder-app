@@ -1,6 +1,5 @@
 import { Asset, Text, FixedBottomCTA, Spacing } from '@toss/tds-mobile';
 import { adaptive } from '@toss/tds-colors';
-import Header from '../components/Header';
 
 interface Props {
   onBack: () => void;
@@ -11,7 +10,6 @@ export default function Home({ onBack, onNext }: Props) {
   return (
     <>
       {/* 상단 네비게이션 헤더 */}
-      <Header onBack={onBack} />
 
       <Spacing size={40} />
 
